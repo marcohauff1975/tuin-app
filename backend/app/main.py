@@ -1,11 +1,20 @@
 from fastapi import FastAPI, File, HTTPException, UploadFile
 from fastapi.concurrency import run_in_threadpool
+from fastapi.middleware.cors import CORSMiddleware
 
 from app.models import BestMatch, IdentifyResponse, Schedule
 from app.plantnet import PlantNetError, identify
 from app.species import get_schedule, list_species
 
 app = FastAPI(title="Tuin-app Backend PoC")
+
+# PoC: de frontend draait op een eigen poort (bijv. http://localhost:5173)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 @app.get("/health")
