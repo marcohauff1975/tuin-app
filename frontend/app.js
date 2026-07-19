@@ -1,7 +1,8 @@
 /* Tuinapp frontend PoC — praat met de backend uit ../backend/
    API-basis is instelbaar via localStorage key "tuinapp_api". */
 
-const API_BASE = localStorage.getItem('tuinapp_api') || 'http://127.0.0.1:8000';
+/* Zelfde host als de frontend (werkt ook via LAN op je telefoon), poort 8000. */
+const API_BASE = localStorage.getItem('tuinapp_api') || `http://${location.hostname}:8000`;
 
 const ANALYZE_STEPS = ['Foto uploaden', 'Soort matchen (Pl@ntNet)', 'Onderhoudsschema ophalen'];
 const MONTHS_NL = ['januari', 'februari', 'maart', 'april', 'mei', 'juni',
