@@ -41,3 +41,9 @@ def test_identify_returns_502_on_service_error(client, monkeypatch):
     with _SAMPLE.open("rb") as f:
         response = client.post("/identify", files={"files": ("sample.jpg", f, "image/jpeg")})
     assert response.status_code == 502
+
+
+def test_root_serves_frontend(client):
+    response = client.get("/")
+    assert response.status_code == 200
+    assert "text/html" in response.headers["content-type"]

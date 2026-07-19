@@ -1,6 +1,9 @@
+from pathlib import Path
+
 from fastapi import FastAPI, File, HTTPException, UploadFile
 from fastapi.concurrency import run_in_threadpool
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 
 from app.models import BestMatch, IdentifyResponse, Schedule
 from app.plantnet import PlantNetError, identify
@@ -48,3 +51,10 @@ async def identify_endpoint(files: list[UploadFile] = File(...)) -> IdentifyResp
         in_database=record is not None,
         schedule=Schedule(**{k: record[k] for k in Schedule.model_fields}) if record else None,
     )
+
+
+# Serve the frontend from the same origin (mounted last so the API routes above win).
+# In deployment the frontend ships alongside the backend; locally it's optional.
+_FRONTEND_DIR = Path(__file__).resolve().parent.parent.parent / "frontend"
+if _FRONTEND_DIR.is_dir():
+    app.mount("/", StaticFiles(directory=_FRONTEND_DIR, html=True), name="frontend")

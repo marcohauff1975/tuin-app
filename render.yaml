@@ -1,0 +1,16 @@
+# Render Blueprint — one web service that serves the API and the frontend.
+# Deploy: New + > Blueprint > pick this repo. Render reads this file.
+services:
+  - type: web
+    name: tuin-app
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    plan: free
+    healthCheckPath: /health
+    envVars:
+      - key: PLANTNET_MODE
+        value: real
+      # Secret — NOT stored in the repo. Render prompts for it on first deploy
+      # (or set it under the service's Environment tab).
+      - key: PLANTNET_API_KEY
+        sync: false

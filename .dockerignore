@@ -1,0 +1,15 @@
+# Never ship secrets or local envs into the image
+**/.env
+**/.env.*
+!**/.env.example
+
+# Local virtualenvs and caches
+**/.venv
+**/__pycache__
+**/*.pyc
+
+# Repo scaffolding not needed at runtime
+.git
+.github
+.superpowers
+docs
