@@ -101,7 +101,6 @@ select = ["E", "F", "I", "UP", "B"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
-env = []
 ```
 
 - [ ] **Step 2: Create `frontend/README.md` and `backend/.env.example`**
