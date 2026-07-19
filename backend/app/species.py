@@ -12,12 +12,12 @@ def _load() -> list[dict]:
 
 
 def list_species() -> list[dict]:
-    return _load()
+    return [dict(r) for r in _load()]
 
 
 def get_schedule(scientific_name: str) -> dict | None:
     key = scientific_name.strip().lower()
     for record in _load():
         if record["scientific_name"].lower() == key:
-            return record
+            return dict(record)
     return None
