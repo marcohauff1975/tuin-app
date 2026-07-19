@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tuinapp</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,400;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="app">
+
+  <div id="offline-banner" class="offline-banner hidden">
+    Backend niet bereikbaar — start hem met <code>uv run uvicorn app.main:app</code> in <code>backend/</code>.
+  </div>
+
+  <!-- Scan / foto kiezen -->
+  <section id="screen-scan" class="screen hidden">
+    <header class="screen-head">
+      <div class="kicker">Nieuwe herkenning</div>
+      <h1>Fotografeer je plant</h1>
+    </header>
+    <div class="scan-body">
+      <label class="drop-zone" for="file-input">
+        <span class="drop-icon">+</span>
+        <span class="drop-title">Kies foto's of maak een foto</span>
+        <span class="drop-sub">Tip: kom dichtbij en focus op het blad</span>
+      </label>
+      <input id="file-input" type="file" accept="image/*" capture="environment" multiple hidden>
+      <div id="preview-strip" class="preview-strip"></div>
+    </div>
+    <footer class="screen-foot">
+      <button id="btn-identify" class="btn-primary" disabled>Herken deze plant</button>
+      <button id="btn-scan-cancel" class="btn-ghost hidden">Annuleer</button>
+    </footer>
+  </section>
+
+  <!-- Analyseren -->
+  <section id="screen-analyzing" class="screen center hidden">
+    <div class="spinner"></div>
+    <h1>Je plant wordt herkend…</h1>
+    <div id="analyze-steps" class="analyze-steps"></div>
+  </section>
+
+  <!-- Resultaat -->
+  <section id="screen-result" class="screen hidden">
+    <header class="screen-head">
+      <div class="kicker">Foto geanalyseerd</div>
+      <h1 id="result-title">Resultaat</h1>
+    </header>
+    <div id="result-body" class="scroll-body"></div>
+    <footer class="screen-foot">
+      <button id="btn-add-garden" class="btn-primary hidden">Voeg toe aan mijn tuin</button>
+      <button id="btn-retry" class="btn-ghost">Nog een foto proberen</button>
+    </footer>
+  </section>
+
+  <!-- Mijn tuin -->
+  <section id="screen-tuin" class="screen hidden">
+    <header class="screen-head">
+      <div class="kicker">Mijn planten</div>
+      <h1>Mijn tuin</h1>
+    </header>
+    <div class="scroll-body">
+      <div id="garden-grid" class="garden-grid"></div>
+    </div>
+  </section>
+
+  <!-- Taken -->
+  <section id="screen-taken" class="screen hidden">
+    <header class="screen-head">
+      <div class="kicker" id="week-kicker"></div>
+      <h1>Deze week in je tuin</h1>
+    </header>
+    <div id="week-days" class="week-days"></div>
+    <div class="scroll-body">
+      <div id="task-list" class="task-list"></div>
+      <div id="premium-banner" class="premium-banner">
+        <div class="pb-title">Regen op komst</div>
+        <div class="pb-body">Met Premium schuift wateradvies automatisch op bij regen. <strong>Meer weten →</strong></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Navigatie -->
+  <nav id="bottom-nav" class="bottom-nav hidden">
+    <button id="nav-taken" class="nav-pill">Taken<span id="task-badge" class="badge hidden"></span></button>
+    <button id="nav-scan" class="nav-fab">+</button>
+    <button id="nav-tuin" class="nav-pill">Mijn tuin</button>
+  </nav>
+
+  <!-- Premium sheet -->
+  <div id="premium-sheet" class="sheet-backdrop hidden">
+    <div class="sheet">
+      <div class="sheet-handle"></div>
+      <div class="sheet-kicker">Tuinapp Premium</div>
+      <h2>Advies dat meebeweegt met jouw tuin én het weer</h2>
+      <ul class="feature-list">
+        <li>Wateradvies schuift automatisch op bij regen (op jouw postcode)</li>
+        <li>Afgestemd op jouw grondsoort en klimaatzone</li>
+        <li>Prioriteitsmeldingen bij plagen zoals de buxusmot</li>
+        <li>Expert-chat met een tuinbouwkundige</li>
+      </ul>
+      <button id="btn-premium-try" class="btn-primary">Probeer 14 dagen gratis</button>
+      <button id="btn-premium-close" class="btn-ghost">Nee bedankt, later misschien</button>
+    </div>
+  </div>
+
+</div>
+<script src="app.js"></script>
+</body>
+</html>
