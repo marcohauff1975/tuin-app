@@ -7,6 +7,10 @@ from app.config import get_settings
 _ENDPOINT = "https://my-api.plantnet.org/v2/identify/all"
 
 
+class PlantNetError(Exception):
+    """Raised when the Pl@ntNet call or its response cannot be processed."""
+
+
 @dataclass
 class Match:
     scientific_name: str
@@ -26,18 +30,23 @@ def _real_matches(images: list[bytes]) -> list[Match]:
     if not settings.api_key:
         raise RuntimeError("PLANTNET_API_KEY is required when PLANTNET_MODE=real")
     files = [("images", (f"image{i}.jpg", img, "image/jpeg")) for i, img in enumerate(images)]
-    response = httpx.post(
-        _ENDPOINT, params={"api-key": settings.api_key}, files=files, timeout=30.0
-    )
-    response.raise_for_status()
-    payload = response.json()
-    matches = [
-        Match(
-            scientific_name=r["species"]["scientificNameWithoutAuthor"],
-            confidence=float(r["score"]),
+    try:
+        response = httpx.post(
+            _ENDPOINT, params={"api-key": settings.api_key}, files=files, timeout=30.0
         )
-        for r in payload.get("results", [])
-    ]
+        response.raise_for_status()
+        payload = response.json()
+        matches = [
+            Match(
+                scientific_name=r["species"]["scientificNameWithoutAuthor"],
+                confidence=float(r["score"]),
+            )
+            for r in payload.get("results", [])
+        ]
+    except httpx.HTTPError as exc:
+        raise PlantNetError(f"Pl@ntNet request failed: {exc}") from exc
+    except (KeyError, TypeError, ValueError) as exc:
+        raise PlantNetError(f"Unexpected Pl@ntNet response: {exc}") from exc
     return _sort_matches(matches)
 
 

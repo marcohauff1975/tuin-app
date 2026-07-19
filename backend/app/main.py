@@ -1,7 +1,8 @@
-from fastapi import FastAPI, File, UploadFile
+from fastapi import FastAPI, File, HTTPException, UploadFile
+from fastapi.concurrency import run_in_threadpool
 
 from app.models import BestMatch, IdentifyResponse, Schedule
-from app.plantnet import identify
+from app.plantnet import PlantNetError, identify
 from app.species import get_schedule, list_species
 
 app = FastAPI(title="Tuin-app Backend PoC")
@@ -20,7 +21,13 @@ def species() -> list[dict]:
 @app.post("/identify", response_model=IdentifyResponse)
 async def identify_endpoint(files: list[UploadFile] = File(...)) -> IdentifyResponse:  # noqa: B008
     images = [await f.read() for f in files]
-    matches = identify(images)
+    try:
+        matches = await run_in_threadpool(identify, images)
+    except PlantNetError as exc:
+        raise HTTPException(
+            status_code=502, detail="Plant identification service unavailable"
+        ) from exc
+
     if not matches:
         return IdentifyResponse(recognized=False)
 

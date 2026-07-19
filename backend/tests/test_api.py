@@ -29,3 +29,15 @@ def test_identify_returns_schedule_for_mock_match(client):
 def test_identify_requires_a_file(client):
     response = client.post("/identify")
     assert response.status_code == 422
+
+
+def test_identify_returns_502_on_service_error(client, monkeypatch):
+    from app.plantnet import PlantNetError
+
+    def _boom(images):
+        raise PlantNetError("service down")
+
+    monkeypatch.setattr("app.main.identify", _boom)
+    with _SAMPLE.open("rb") as f:
+        response = client.post("/identify", files={"files": ("sample.jpg", f, "image/jpeg")})
+    assert response.status_code == 502
