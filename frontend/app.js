@@ -105,7 +105,9 @@ function renderResult() {
   const r = state.result;
   const body = $('result-body');
   const addBtn = $('btn-add-garden');
+  const correctBtn = $('btn-correct');
   addBtn.classList.add('hidden');
+  correctBtn.classList.add('hidden');
 
   if (r.error) {
     $('result-title').textContent = 'Er ging iets mis';
@@ -115,15 +117,18 @@ function renderResult() {
 
   if (!r.recognized) {
     $('result-title').textContent = 'Geen plant herkend';
-    body.innerHTML = `<div class="notice-card warn">We konden geen plant herkennen in deze foto. Kom dichterbij en focus op het blad of de bloem.</div>`;
+    body.innerHTML = `<div class="notice-card warn">We konden geen plant herkennen in deze foto. Kom dichterbij en focus op het blad of de bloem — of kies de soort zelf.</div>`;
+    correctBtn.textContent = 'Zelf de soort kiezen';
+    correctBtn.classList.remove('hidden');
     return;
   }
 
-  const conf = Math.round(r.best_match.confidence * 100);
-  const low = conf < 75;
+  const corrected = !!r.corrected;
+  const conf = corrected ? null : Math.round(r.best_match.confidence * 100);
+  const low = !corrected && conf < 75;
   const s = r.schedule;
   const name = s ? s.common_name_nl : r.best_match.scientific_name;
-  $('result-title').textContent = 'We herkenden je plant';
+  $('result-title').textContent = corrected ? 'Soort gecorrigeerd' : 'We herkenden je plant';
 
   const photo = state.photoUrl
     ? `<img src="${state.photoUrl}" alt="jouw foto">`
@@ -132,15 +137,16 @@ function renderResult() {
   let html = `
     <div class="result-card">
       <div class="result-photo">${photo}
-        <span class="conf-chip ${low ? 'low' : ''}">${conf}% zeker</span>
+        <span class="conf-chip ${low ? 'low' : ''}">${corrected ? 'Door jou gekozen' : conf + '% zeker'}</span>
       </div>
       <div class="result-info">
         <div class="result-name">${name}</div>
-        <div class="result-latin">${r.best_match.scientific_name}</div>
+        ${r.best_match.scientific_name === name ? '' : `<div class="result-latin">${r.best_match.scientific_name}</div>`}
+        ${corrected ? '' : `
         <div class="conf-bar-row ${low ? 'low' : ''}">
           <div class="conf-bar"><div style="width:${conf}%"></div></div>
           <span class="conf-label">${conf}% zeker</span>
-        </div>
+        </div>`}
         ${low ? '<div class="chip-row"><span class="chip" style="background:#f0e4dc;color:#b05c2a">Twijfel? Maak een close-up van het blad</span></div>' : ''}
       </div>
     </div>`;
@@ -162,7 +168,63 @@ function renderResult() {
   }
 
   body.innerHTML = html;
+  correctBtn.textContent = 'Dit klopt niet — kies de juiste soort';
+  correctBtn.classList.remove('hidden');
 }
+
+/* ---------- correctie ---------- */
+
+async function openCorrectSheet() {
+  const list = $('species-list');
+  list.innerHTML = '<div class="notice-card">Soortenlijst laden…</div>';
+  $('correct-sheet').classList.remove('hidden');
+  let species = [];
+  try {
+    const res = await fetch(API_BASE + '/species');
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    species = await res.json();
+  } catch {
+    list.innerHTML = '<div class="notice-card warn">Kon de soortenlijst niet laden. Controleer of de backend draait.</div>';
+    return;
+  }
+  list.innerHTML = species.map((sp, i) => `
+    <button class="species-option" data-idx="${i}">
+      <div class="so-name">${sp.common_name_nl}</div>
+      <div class="so-latin">${sp.scientific_name}</div>
+    </button>`).join('') + `
+    <button class="species-option none" data-idx="-1">
+      <div class="so-name">Mijn plant staat er niet tussen</div>
+    </button>`;
+  list.querySelectorAll('.species-option').forEach((el) => {
+    el.addEventListener('click', () => applyCorrection(species[Number(el.dataset.idx)] || null));
+  });
+}
+
+function applyCorrection(sp) {
+  $('correct-sheet').classList.add('hidden');
+  if (!sp) {
+    state.result = {
+      recognized: true,
+      corrected: true,
+      best_match: { scientific_name: 'Onbekende soort', confidence: null },
+      in_database: false,
+      schedule: null,
+    };
+  } else {
+    const { scientific_name, ...schedule } = sp;
+    state.result = {
+      recognized: true,
+      corrected: true,
+      best_match: { scientific_name, confidence: null },
+      in_database: true,
+      schedule,
+    };
+  }
+  renderResult();
+}
+
+$('btn-correct').addEventListener('click', openCorrectSheet);
+$('btn-correct-close').addEventListener('click', () => $('correct-sheet').classList.add('hidden'));
 
 $('btn-add-garden').addEventListener('click', () => {
   const r = state.result;

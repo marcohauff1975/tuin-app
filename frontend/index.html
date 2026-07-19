@@ -52,6 +52,7 @@
     <div id="result-body" class="scroll-body"></div>
     <footer class="screen-foot">
       <button id="btn-add-garden" class="btn-primary hidden">Voeg toe aan mijn tuin</button>
+      <button id="btn-correct" class="btn-secondary hidden">Dit klopt niet — kies de juiste soort</button>
       <button id="btn-retry" class="btn-ghost">Nog een foto proberen</button>
     </footer>
   </section>
@@ -89,6 +90,17 @@
     <button id="nav-scan" class="nav-fab">+</button>
     <button id="nav-tuin" class="nav-pill">Mijn tuin</button>
   </nav>
+
+  <!-- Correctie sheet -->
+  <div id="correct-sheet" class="sheet-backdrop hidden">
+    <div class="sheet">
+      <div class="sheet-handle"></div>
+      <div class="sheet-kicker">Corrigeer de soort</div>
+      <h2>Welke plant is het wel?</h2>
+      <div id="species-list" class="species-list"></div>
+      <button id="btn-correct-close" class="btn-ghost">Annuleer</button>
+    </div>
+  </div>
 
   <!-- Premium sheet -->
   <div id="premium-sheet" class="sheet-backdrop hidden">
