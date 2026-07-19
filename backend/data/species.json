@@ -1,0 +1,72 @@
+[
+  {
+    "scientific_name": "Lavandula angustifolia",
+    "common_name_nl": "Lavendel",
+    "pruning_month": "maart",
+    "fertilizing": { "lente": "eenmalig organisch", "zomer": "niet nodig" },
+    "watering": "matig, 1x per week bij droogte"
+  },
+  {
+    "scientific_name": "Hydrangea macrophylla",
+    "common_name_nl": "Hortensia",
+    "pruning_month": "maart",
+    "fertilizing": { "lente": "organisch", "zomer": "kalium-rijk" },
+    "watering": "veel, grond vochtig houden"
+  },
+  {
+    "scientific_name": "Rosa",
+    "common_name_nl": "Roos",
+    "pruning_month": "maart",
+    "fertilizing": { "lente": "rozenmest", "zomer": "herhaal na eerste bloei" },
+    "watering": "regelmatig, aan de voet"
+  },
+  {
+    "scientific_name": "Buxus sempervirens",
+    "common_name_nl": "Buxus",
+    "pruning_month": "mei",
+    "fertilizing": { "lente": "stikstofrijk", "zomer": "eenmalig" },
+    "watering": "matig, niet laten uitdrogen"
+  },
+  {
+    "scientific_name": "Hedera helix",
+    "common_name_nl": "Klimop",
+    "pruning_month": "april",
+    "fertilizing": { "lente": "universeel", "zomer": "niet nodig" },
+    "watering": "weinig, droogtetolerant"
+  },
+  {
+    "scientific_name": "Acer palmatum",
+    "common_name_nl": "Japanse esdoorn",
+    "pruning_month": "november",
+    "fertilizing": { "lente": "langzaamwerkend", "zomer": "niet nodig" },
+    "watering": "regelmatig, geen natte voeten"
+  },
+  {
+    "scientific_name": "Wisteria sinensis",
+    "common_name_nl": "Blauweregen",
+    "pruning_month": "februari",
+    "fertilizing": { "lente": "kaliumrijk", "zomer": "fosforrijk" },
+    "watering": "regelmatig tijdens groei"
+  },
+  {
+    "scientific_name": "Clematis",
+    "common_name_nl": "Bosrank",
+    "pruning_month": "februari",
+    "fertilizing": { "lente": "organisch", "zomer": "kaliumrijk" },
+    "watering": "veel, voet in de schaduw"
+  },
+  {
+    "scientific_name": "Taxus baccata",
+    "common_name_nl": "Taxus",
+    "pruning_month": "juni",
+    "fertilizing": { "lente": "organisch", "zomer": "niet nodig" },
+    "watering": "matig, goed drainerend"
+  },
+  {
+    "scientific_name": "Prunus laurocerasus",
+    "common_name_nl": "Laurierkers",
+    "pruning_month": "mei",
+    "fertilizing": { "lente": "stikstofrijk", "zomer": "eenmalig" },
+    "watering": "regelmatig eerste jaar, daarna weinig"
+  }
+]
